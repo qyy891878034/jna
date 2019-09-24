@@ -592,7 +592,7 @@ public final class Native implements Version {
             throw new IllegalArgumentException("Interface (" + interfaceClass.getSimpleName() + ")"
                     + " of library=" + name + " does not extend " + Library.class.getSimpleName());
         }
-
+        System.out.println("load lib start 1");
         Library.Handler handler = new Library.Handler(name, interfaceClass, options);
         ClassLoader loader = interfaceClass.getClassLoader();
         Object proxy = Proxy.newProxyInstance(loader, new Class[] {interfaceClass}, handler);

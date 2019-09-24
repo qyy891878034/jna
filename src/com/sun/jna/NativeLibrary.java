@@ -84,7 +84,8 @@ import java.util.logging.Logger;
 public class NativeLibrary {
 
     private static final Logger LOG = Logger.getLogger(NativeLibrary.class.getName());
-    private final static Level DEBUG_LOAD_LEVEL = DEBUG_LOAD ? Level.INFO : Level.FINE;
+//    private final static Level DEBUG_LOAD_LEVEL = DEBUG_LOAD ? Level.INFO : Level.FINE;
+    private final static Level DEBUG_LOAD_LEVEL = Level.INFO;
 
     private long handle;
     private final String libraryName;
@@ -152,12 +153,12 @@ public class NativeLibrary {
 
     private static NativeLibrary loadLibrary(String libraryName, Map<String, ?> options) {
         LOG.log(DEBUG_LOAD_LEVEL, "Looking for library '" + libraryName + "'");
-
+        System.out.println("load lib start 10");
         List<Throwable> exceptions = new ArrayList<Throwable>();
         boolean isAbsolutePath = new File(libraryName).isAbsolute();
         List<String> searchPath = new ArrayList<String>();
         int openFlags = openFlags(options);
-
+        System.out.println("load lib start 11");
         // Append web start path, if available.  Note that this does not
         // attempt any library name variations
         String webstartPath = Native.getWebStartLibraryPath(libraryName);
@@ -165,7 +166,7 @@ public class NativeLibrary {
             LOG.log(DEBUG_LOAD_LEVEL, "Adding web start path " + webstartPath);
             searchPath.add(webstartPath);
         }
-
+        System.out.println("load lib start 12");
         //
         // Prepend any custom search paths specifically for this library
         //
@@ -175,7 +176,7 @@ public class NativeLibrary {
                 searchPath.addAll(0, customPaths);
             }
         }
-
+        System.out.println("load lib start 13");
         LOG.log(DEBUG_LOAD_LEVEL, "Adding paths from jna.library.path: " + System.getProperty("jna.library.path"));
 
         searchPath.addAll(initPaths("jna.library.path"));
@@ -432,6 +433,7 @@ public class NativeLibrary {
      * @param libraryOptions Native library options for the given library (see {@link Library}).
      */
     public static final NativeLibrary getInstance(String libraryName, Map<String, ?> libraryOptions) {
+    	System.out.println("load lib start 6");
         Map<String, Object> options = new HashMap<String, Object>(libraryOptions);
         if (options.get(Library.OPTION_CALLING_CONVENTION) == null) {
             options.put(Library.OPTION_CALLING_CONVENTION, Integer.valueOf(Function.C_CONVENTION));
@@ -439,14 +441,16 @@ public class NativeLibrary {
 
         // Use current process to load libraries we know are already
         // loaded by the VM to ensure we get the correct version
+        System.out.println("load lib start 7");
         if ((Platform.isLinux() || Platform.isFreeBSD() || Platform.isAIX())
             && Platform.C_LIBRARY_NAME.equals(libraryName)) {
             libraryName = null;
         }
+        System.out.println("load lib start 8" + libraryName);
         synchronized (libraries) {
             Reference<NativeLibrary> ref = libraries.get(libraryName + options);
             NativeLibrary library = (ref != null) ? ref.get() : null;
-
+            System.out.println("load lib start 9" + library);
             if (library == null) {
                 if (libraryName == null) {
                     library = new NativeLibrary("<process>", null, Native.open(null, openFlags(options)), options);

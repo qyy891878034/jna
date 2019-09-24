@@ -169,15 +169,15 @@ public interface Library {
         private final InvocationMapper invocationMapper;
         private final Map<Method, FunctionInfo> functions = new WeakHashMap<Method, FunctionInfo>();
         public Handler(String libname, Class<?> interfaceClass, Map<String, ?> options) {
-
+        	System.out.println("load lib start 2");
             if (libname != null && "".equals(libname.trim())) {
                 throw new IllegalArgumentException("Invalid library name \"" + libname + "\"");
             }
-
+            System.out.println("load lib start 3");
             if (!interfaceClass.isInterface()) {
                 throw new IllegalArgumentException(libname + " does not implement an interface: " + interfaceClass.getName());
             }
-
+            System.out.println("load lib start 4");
             this.interfaceClass = interfaceClass;
             this.options = new HashMap<String, Object>(options);
             int callingConvention = AltCallingConvention.class.isAssignableFrom(interfaceClass)
@@ -189,6 +189,7 @@ public interface Library {
             if (this.options.get(OPTION_CLASSLOADER) == null) {
                 this.options.put(OPTION_CLASSLOADER, interfaceClass.getClassLoader());
             }
+            System.out.println("load lib start 5");
             this.nativeLibrary = NativeLibrary.getInstance(libname, this.options);
             invocationMapper = (InvocationMapper)this.options.get(OPTION_INVOCATION_MAPPER);
         }
